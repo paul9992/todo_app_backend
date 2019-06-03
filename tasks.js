@@ -5,10 +5,10 @@ const app = express();
 
 app.get("/tasks", function (request, response) {
 
-  const username = request.query.username;
+  const tasklist = ['Get up', 'Get out of bed', 'Drag a comb across my head'];
 
   response.json({
-    message: `Username ${username} requested the tasks`
+    message: `Here is your hard-coded list of tasks: ${tasklist}`
   });
 });
 
