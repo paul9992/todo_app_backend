@@ -3,12 +3,22 @@ const serverless = require("serverless-http");
 const app = express();
 const mysql = require('mysql');
 
+/*
+const cors = require('cors');
+app.use(cors());
+*/
+
+app.use(express.json());
+
+
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: "todoapplication"
 });
+
+
 
 app.get("/tasks", function(request, response) {
   const username = request.query.username;
@@ -34,6 +44,13 @@ app.get("/tasks", function(request, response) {
       });
     }
   });
+});
+
+app.post("/tasks", function(request, response) {
+
+  const taskToBeSaved = request.body;
+
+  console.log(taskToBeSaved);
 });
 
 module.exports.handler = serverless(app);
