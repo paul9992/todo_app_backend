@@ -26,7 +26,7 @@ app.get("/tasks", function(request, response) {
   let queryToExecute = "SELECT * FROM Task";
   
   if (username) {
-    query =
+    queryToExecute =
       "SELECT * FROM Task JOIN User on Task.UserId = User.UserId " +
       "WHERE User.Username = " + connection.escape(username);
   }
@@ -69,6 +69,31 @@ app.post("/tasks", function(request, response) {
   });
 });
 
+
+app.put("/tasks", function(request, response) {
+
+  const taskToBeUpdated = request.body;
+  const taskID = request.query.taskID;
+
+  const queryToExecute = "UPDATE Task SET ? WHERE taskID = " + connection.escape(taskID);
+
+  connection.query(queryToExecute, taskToBeUpdated, function (error, results, fields) {
+    if (error) {
+      console.log("Error updating task", error);
+      response.status(500).json({
+        error: error
+      });
+      
+    } 
+    else {
+      response.json({
+        rows_updated: results.affectedRows
+      });
+    }
+  });
+});
+
+
 app.delete("/tasks", function(request, response) {
 
   const taskToBeDeleted = request.body;
@@ -91,7 +116,8 @@ app.delete("/tasks", function(request, response) {
       });
     }
   });
-
 });
+
+
 
 module.exports.handler = serverless(app);
