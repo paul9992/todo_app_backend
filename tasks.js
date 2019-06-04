@@ -67,7 +67,30 @@ app.post("/tasks", function(request, response) {
       });
     }
   });
+});
 
+app.delete("/tasks", function(request, response) {
+
+  const taskToBeDeleted = request.body;
+
+  const queryToExecute = "DELETE FROM Task WHERE ?";
+
+  console.log (request.body);
+  
+  connection.query(queryToExecute, taskToBeDeleted, function (error, results, fields) {
+    if (error) {
+      console.log("Error deleting task", error);
+      response.status(500).json({
+        error: error
+      });
+      
+    } 
+    else {
+      response.json({
+        rows_deleted: results.affectedRows
+      });
+    }
+  });
 
 });
 
