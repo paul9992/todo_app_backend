@@ -38,7 +38,8 @@ app.get("/tasks", function(request, response) {
         error: err
       });
       
-    } else {
+    } 
+    else {
       response.json({
         tasks: queryResults
       });
@@ -50,7 +51,24 @@ app.post("/tasks", function(request, response) {
 
   const taskToBeSaved = request.body;
 
-  console.log(taskToBeSaved);
+  const queryToExecute = "INSERT INTO Task SET ?";
+  
+  connection.query(queryToExecute, taskToBeSaved, function (error, results, fields) {
+    if (error) {
+      console.log("Error saving new task", error);
+      response.status(500).json({
+        error: error
+      });
+      
+    } 
+    else {
+      response.json({
+        taskID: results.insertId
+      });
+    }
+  });
+
+
 });
 
 module.exports.handler = serverless(app);
