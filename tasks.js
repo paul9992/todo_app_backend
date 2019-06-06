@@ -71,10 +71,14 @@ app.post("/tasks", function(request, response) {
 
 
 app.put("/tasks", function(request, response) {
+  /* this expects call in format /tasks?taskID=2 if updating taskID = 2 
+   Note that in serverless.yml the path expected for update is just 'tasks
+   i.e. the 'taskID' is extracted from the request below - then sanitised 'using' 'escape' - then used in the query*/
 
   const taskToBeUpdated = request.body;
   const taskID = request.query.taskID;
 
+  console.log(request.body);
   const queryToExecute = "UPDATE Task SET ? WHERE taskID = " + connection.escape(taskID);
 
   connection.query(queryToExecute, taskToBeUpdated, function (error, results, fields) {
@@ -86,19 +90,24 @@ app.put("/tasks", function(request, response) {
       
     } 
     else {
-      response.json({
-        rows_updated: results.affectedRows
-      });
+      response.send(200);
     }
   });
+
+  /* some debugging code */
+  console.log("query= " + queryToExecute);
+
 });
 
 
-app.delete("/tasks", function(request, response) {
+app.delete("/tasks/:id", function(request, response) {
 
-  const taskToBeDeleted = request.body;
+  /* this expects call in format /tasks/2 if deleting taskID = 2 
+   Note that in serverless.yml the path expected for delete is tasks/{id}, 
+   i.e. the number after 'tasks' is the id which is extracted from the request below then used in the query*/
+  const taskToBeDeleted = request.params.id;
 
-  const queryToExecute = "DELETE FROM Task WHERE ?";
+  const queryToExecute = "DELETE FROM Task WHERE TaskID = ?";
 
   console.log (request.body);
   
@@ -116,6 +125,10 @@ app.delete("/tasks", function(request, response) {
       });
     }
   });
+
+    /* some debugging code */
+    console.log(queryToExecute);
+    console.log(taskToBeDeleted);
 });
 
 
