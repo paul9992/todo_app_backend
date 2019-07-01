@@ -21,10 +21,14 @@ const connection = mysql.createConnection({
 
 
 app.get("/tasks", function(request, response) {
+  /* GET for the Tasks: 
+    retrieves Tasks for a specified User provided in the HTTP requests */
+
   const username = request.query.username;
 
   let queryToExecute = "SELECT * FROM Task";
   
+  /* connection.escape sanitises the provided username text before attempting to use it */
   if (username) {
     queryToExecute =
       "SELECT * FROM Task JOIN User on Task.UserId = User.UserId " +
@@ -48,6 +52,8 @@ app.get("/tasks", function(request, response) {
 });
 
 app.post("/tasks", function(request, response) {
+  /* POST for the Tasks: 
+    inserts a Task based on values in JSON object provided in body of request */
 
   const taskToBeSaved = request.body;
 
